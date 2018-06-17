@@ -1,4 +1,7 @@
 <template>
+    
+      
+    
     <div class="form-signin">
 
         <h2 class="form-signin-heading">Please sign in</h2>
@@ -7,13 +10,17 @@
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" name="password" class="form-control" placeholder="Password" v-model="input.password" />
         
-        <button class="btn btn-lg btn-primary btn-block" type="button" v-on:click="login()">Login</button>
-     
+        <button class="btn btn-lg btn-primary btn-block" type="button" v-on:click="postPost()">Login</button>
+        <br/><br/>
+       
     </div>
-
+ 
 </template>
 
 <script>
+
+import axios from 'axios';
+
     export default {
         name: 'Login',
         data() {
@@ -21,12 +28,16 @@
                 input: {
                     username: "",
                     password: ""
-                }
+                },
+                responseMessage: ""
             }
         },
         methods: {
             login() {
                 if(this.input.username != "" && this.input.password != "") {
+                   
+                   
+                   
                     if(this.input.username == this.$parent.mockAccount.username && this.input.password == this.$parent.mockAccount.password) {
                         this.$emit("authenticated", true);
                         this.$router.replace({ name: "secure" });
@@ -36,7 +47,19 @@
                 } else {
                     console.log("A username and password must be present");
                 }
-            }
+            },
+
+        postPost() {
+            axios.post('http://localhost:9000/api/logintest', 
+            {
+                username: this.input.username, password: this.input.password
+            })
+            .then(response => {this.responseMessage = response.data; console.log("answer is: " + this.responseMessage)})
+            .catch(e => {
+            this.errors.push(e)
+
+            })
+        }
         }
     }
 </script>
